@@ -2,3 +2,4 @@
 
 # k8s安装配置
 mac系统中docker自带Kubernetes，所以只安装docker即可。docker最新版本的下载地址[https://www.docker.com/get-started](https://www.docker.com/get-started)，选择mac版本下载，下载文件为：Docker.dmg，安装dmg文件后修改配置就可以开启Kubernetes，如下图：
+![](https://github.com/markbest/k8s-study-notes/blob/main/images/d158d8a2-014e-11eb-b281-7eeb6dbfe843.png "")
