@@ -46,7 +46,7 @@ COPY . .
 EXPOSE 8001
 CMD ["/bin/bash", "/go/src/script/build.sh"]
 ```
-- 整个目录结构如下：
+- 整个目录结构如下：  
 go-example  
 |-- app  
 |  |-- main  
