@@ -6,3 +6,43 @@
  - windows系统具体安装可以自行百度。
 
 ## 制作实例镜像
+书中的实例采用的是node.js案例，从制作镜像到推送到docker hub，从编写yaml，到创建node和service，完整的实现一个小型服务的部署流程，鉴于我们后端没有用node.js所以这里换成golang来实例操作。
+- main.go
+```golang
+package main
+
+import (
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+)
+
+func sayHello(w http.ResponseWriter, r *http.Request) {
+	hostName, _ := os.Hostname()
+	_, _ = fmt.Fprintf(w, "hello world, " + hostName + "\n")
+}
+
+func main() {
+	http.HandleFunc("/", sayHello)
+
+	log.Println("服务启动成功，监听端口：8001")
+	if er := http.ListenAndServe("0.0.0.0:8001", nil); er != nil {
+		log.Fatal("ListenAndServe: ", er)
+	}
+}
+```
+- build.sh
+```shell
+#!/usr/bin/env bash
+cd /go/src/app/ && ./main
+```
+- Dockerfile
+```
+FROM golang
+MAINTAINER markbest
+WORKDIR /go/src/
+COPY . .
+EXPOSE 8001
+CMD ["/bin/bash", "/go/src/script/build.sh"]
+```
