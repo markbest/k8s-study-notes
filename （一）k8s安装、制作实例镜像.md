@@ -53,3 +53,13 @@ go-example
 |  |-- Dockerfile  
 |-- script  
 |  |-- build.sh  
+- 进入go-example目录，开始制作镜像
+```shell
+// 制作镜像 
+docker build -t go-example . 
+// 给镜像打tag，这里的tag必须和docker hub上一致 
+docker tag go-example markbest/go-example:v1 
+// 将镜像推送到docker hub 
+docker push
+```
+进入docker hub可以看到镜像已经推送成功，以后可以直接在外网使用：
