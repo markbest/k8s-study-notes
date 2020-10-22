@@ -64,4 +64,4 @@ docker push
 ```
 进入docker hub可以看到镜像已经推送成功
 ![](https://github.com/markbest/k8s-study-notes/blob/main/images/docker-hub.png "") 
-以后就可以在k8s中使用
+以后就可以在k8s中使用。
