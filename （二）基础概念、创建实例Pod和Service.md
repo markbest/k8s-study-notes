@@ -34,13 +34,13 @@ spec:
         - image: markbest/go-example:v1
           name: go-example
 ```
-这里我们使用namespace配置直接指定Pod创建在dailyyoga下，镜像使用的是上一章节里制作的markbest/go-example:v1，执行命令：kubectl create -f go-example.yaml这样子就创建好了我们的pod。 
-如果直接使用kubectl get pods是看不到我们刚才创建的pod的，应为k8s默认的namespace是default，而我们创建的pod在dailyyoga中，所有需要切换当前的namespace到dailyyoga。直接编辑命令行配置文件：vi ~/.zshr，添加以下内容：
+这里我们使用namespace配置直接指定Pod创建在dailyyoga下，镜像使用的是上一章节里制作的markbest/go-example:v1，执行命令：kubectl create -f go-example.yaml这样子就创建好了我们的pod。   
+如果直接使用kubectl get pods是看不到我们刚才创建的pod的，因为k8s默认的namespace是default，而我们创建的pod在dailyyoga中，所有需要切换当前的namespace到dailyyoga。直接编辑命令行配置文件：vi ~/.zshr，添加以下内容：
 ```
 alias kcd="kubectl config set-context $(kubectl config current-context) --namespace"
 ``` 
-保存文件，然后使用命令：kcd dailyyoga，这样子就切换namespace到dailyyoga，然后再执行kubectl get pods就可以看到以go-example开头的就是我们刚才创建的pod。
-这时候我们命令：“curl http://127.0.0.1:8001”是无法访问我们的服务的，应为当前只是在pod中映射了8001端口，没有映射本地的8001端口，所以是调用不通的。可以使用命令：kubectl port-forward go-exmaple-xxx 8001:8001，强制将pod中的8001端口映射到本地的8001端口，此时我们重新执行curl就可以看到访问服务返回的结果，这样子证明我们的服务已经创建成功了。但是在实际生产环境中我们不可能使用port-forward来强制映射端口，此时我们需要创建一个service暴露pod的8001端口到外网，然后外网就能正常访问。
+保存文件，然后使用命令：kcd dailyyoga，这样子就切换namespace到dailyyoga，然后再执行kubectl get pods就可以看到以go-example开头的就是我们刚才创建的pod。  
+这时候我们命令：curl http://127.0.0.1:8001 是无法访问我们的服务的，应为当前只是在pod中映射了8001端口，没有映射本地的8001端口，所以是调用不通的。可以使用命令：kubectl port-forward go-exmaple-xxx 8001:8001，强制将pod中的8001端口映射到本地的8001端口，此时我们重新执行curl就可以看到访问服务返回的结果，这样子证明我们的服务已经创建成功了。但是在实际生产环境中我们不可能使用port-forward来强制映射端口，此时我们需要创建一个service暴露pod的8001端口到外网，然后外网就能正常访问。
 - 创建service，service.yaml内容如下：
 ```
 apiVersion: v1
