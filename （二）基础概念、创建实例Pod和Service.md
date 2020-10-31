@@ -61,4 +61,5 @@ spec:
           targetPort: 8001
 ```
 LoadBalancer字段表示当前服务类型是负载均衡；selector表示匹配的标签；port和targetPort表示需要映射的端口，yaml文件中的各个字段内容以及具体含义可以通过命令：kubectl explain services和kubectl explain services.spec.type等等来了解。  
-执行命令：kubectl create -f service.yaml，我们的service就创建成功了，通过kubectl get services可以看到go-example就是我们创建的service，这时候通过curl就可以访问我们的服务，证明端口已经成功映射到了本地。
+执行命令：kubectl create -f service.yaml，我们的service就创建成功了，通过kubectl get services可以看到go-example就是我们创建的service，这时候通过curl就可以访问我们的服务，证明我们创建的service已经成功生效了。  
+至此实例的最基础功能已经创建完成了，一个pod和一个service，实际生产环境中会比这个更加复杂，比如使用RS、RC、Deployment来管理服务的动作伸缩和分版本发布，下一节我们继续了解。
