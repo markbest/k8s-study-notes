@@ -19,7 +19,7 @@ metadata:
     name: dailyyoga
 ```
 执行命令：kubectl create -f namespace.yaml，这样我们的dailyyoga namespace就创建好了，以后的实例我们都创建在namespace下，避免和k8s默认的namespace混淆不好管理.执行命令：kubectl get namespace查看所有的namespace，可以看到我们新建的dailyyoga。当然也可以直接使用命令：kubectl create namespace dailyyoga创建而不是使用文件。
-- 创建我们的Pod，go-example.yaml内容如下：
+- 创建Pod，go-example.yaml内容如下：
 ```
 apiVersion: v1
 kind: Pod
@@ -39,3 +39,25 @@ spec:
 alias kcd="kubectl config set-context $(kubectl config current-context) --namespace"
 ``` 
 保存文件，然后使用命令：kcd dailyyoga，这样子就切换namespace到dailyyoga，然后再执行kubectl get pods就可以看到以go-example开头的就是我们刚才创建的pod。
+这时候我们命令：“curl http://127.0.0.1:8001”是无法访问我们的服务的，应为当前只是在pod中映射了8001端口，没有映射本地的8001端口，所以是调用不通的。可以使用命令：kubectl port-forward go-exmaple-xxx 8001:8001，强制将pod中的8001端口映射到本地的8001端口，此时我们重新执行curl就可以看到访问服务返回的结果，这样子证明我们的服务已经创建成功了。但是在实际生产环境中我们不可能使用port-forward来强制映射端口，此时我们需要创建一个service暴露pod的8001端口到外网，然后外网就能正常访问。
+- 创建service，service.yaml内容如下：
+```
+apiVersion: v1
+kind: Service
+metadata:
+    name: go-example
+    namespace: dailyyoga
+    labels:
+        k8s-app: go-example
+spec:
+    type: LoadBalancer
+    selector:
+        k8s-app: go-example
+    ports:
+        - name: tcp-8001
+          protocol: TCP
+          port: 8001
+          targetPort: 8001
+```
+LoadBalancer字段表示当前服务类型是负载均衡；selector表示匹配的标签；port和targetPort表示需要映射的端口，yaml文件中的各个字段内容以及具体含义可以通过命令：kubectl explain services和kubectl explain services.spec.type等等来了解。
+执行命令：kubectl create -f service.yaml，我们的service就创建成功了，通过kubectl get services可以看到go-example就是我们创建的service，这时候通过curl就可以访问我们的服务，证明端口已经成功映射到了本地。
