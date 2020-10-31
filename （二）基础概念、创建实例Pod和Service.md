@@ -1,5 +1,5 @@
 ## 基础概念
-- Namespace
+- Namespace  
 可以认为namespaces是kubernetes集群中的虚拟化集群。在一个Kubernetes集群中可以拥有多个命名空间，它们在逻辑上彼此隔离。 他们可以为您和您的团队提供组织，安全甚至性能方面的帮助！
 - Pod
 Pod是Kubernetes创建或部署的最小/最简单的基本单位，一个Pod代表集群上正在运行的一个进程。
