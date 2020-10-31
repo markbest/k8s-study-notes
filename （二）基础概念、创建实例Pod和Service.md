@@ -9,7 +9,7 @@ ReplicationController会替换由于某些原因而被删除或终止的pod，�
 - ReplicaSet
 ReplicaSet（RS）是Replication Controller（RC）的升级版本。ReplicaSet 和  Replication Controller之间的唯一区别是对选择器的支持。ReplicaSet支持labels user guide中描述的set-based选择器要求， 而Replication Controller仅支持equality-based的选择器要求。
 
-## 如何使用
+## 创建实例Pod和Service
 上一笔记我们记录了k8s的安装配置和实例镜像的制作，这节主要介绍在k8s中创建一个实例服务。
 - 首先新建一个namespace，namespace.yaml内容如下：
 ```
@@ -19,7 +19,7 @@ metadata:
     name: dailyyoga
 ```
 执行命令：kubectl create -f namespace.yaml，这样我们的dailyyoga namespace就创建好了，以后的实例我们都创建在namespace下，避免和k8s默认的namespace混淆不好管理.执行命令：kubectl get namespace查看所有的namespace，可以看到我们新建的dailyyoga。当然也可以直接使用命令：kubectl create namespace dailyyoga创建而不是使用文件。
-- 创建我们的实例，go-example.yaml内容如下：
+- 创建我们的Pod，go-example.yaml内容如下：
 ```
 apiVersion: v1
 kind: Pod
@@ -33,5 +33,9 @@ spec:
         - image: markbest/go-example:v1
           name: go-example
 ```
-这里我们使用namespace直接指定实例创建在dailyyoga下，镜像使用的是上一章节里制作的markbest/go-example:v1，执行命令：kubectl create -f go-example.yaml这样子就创建好了我们的pod go-example.
-
+这里我们使用namespace配置直接指定Pod创建在dailyyoga下，镜像使用的是上一章节里制作的markbest/go-example:v1，执行命令：kubectl create -f go-example.yaml这样子就创建好了我们的pod。
+如果直接使用kubectl get pods是看不到我们刚才创建的pod的，应为k8s默认的namespace是default，而我们创建的pod在dailyyoga中，所有需要切换当前的namespace到dailyyoga。直接编辑命令行配置文件：vi ~/.zshr，添加以下内容：
+```
+alias kcd="kubectl config set-context $(kubectl config current-context) --namespace"
+``` 
+保存文件，然后使用命令：kcd dailyyoga，这样子就切换namespace到dailyyoga，然后再执行kubectl get pods就可以看到以go-example开头的就是我们刚才创建的pod。
