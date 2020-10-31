@@ -18,7 +18,7 @@ kind: Namespace
 metadata:
     name: dailyyoga
 ```
-执行命令：kubectl create -f namespace.yaml，这样我们的dailyyoga namespace就创建好了，以后的实例我们都创建在namespace下，避免和k8s默认的namespace混淆不好管理。
+执行命令：kubectl create -f namespace.yaml，这样我们的dailyyoga namespace就创建好了，以后的实例我们都创建在namespace下，避免和k8s默认的namespace混淆不好管理。  
 执行命令：kubectl get namespace查看所有的namespace，可以看到我们新建的dailyyoga。当然也可以直接使用命令：kubectl create namespace dailyyoga创建而不是使用文件。
 - 创建Pod，go-example.yaml内容如下：
 ```
