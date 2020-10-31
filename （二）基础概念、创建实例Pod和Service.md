@@ -18,7 +18,8 @@ kind: Namespace
 metadata:
     name: dailyyoga
 ```
-执行命令：kubectl create -f namespace.yaml，这样我们的dailyyoga namespace就创建好了，以后的实例我们都创建在namespace下，避免和k8s默认的namespace混淆不好管理.执行命令：kubectl get namespace查看所有的namespace，可以看到我们新建的dailyyoga。当然也可以直接使用命令：kubectl create namespace dailyyoga创建而不是使用文件。
+执行命令：kubectl create -f namespace.yaml，这样我们的dailyyoga namespace就创建好了，以后的实例我们都创建在namespace下，避免和k8s默认的namespace混淆不好管理。
+执行命令：kubectl get namespace查看所有的namespace，可以看到我们新建的dailyyoga。当然也可以直接使用命令：kubectl create namespace dailyyoga创建而不是使用文件。
 - 创建Pod，go-example.yaml内容如下：
 ```
 apiVersion: v1
@@ -33,7 +34,7 @@ spec:
         - image: markbest/go-example:v1
           name: go-example
 ```
-这里我们使用namespace配置直接指定Pod创建在dailyyoga下，镜像使用的是上一章节里制作的markbest/go-example:v1，执行命令：kubectl create -f go-example.yaml这样子就创建好了我们的pod。
+这里我们使用namespace配置直接指定Pod创建在dailyyoga下，镜像使用的是上一章节里制作的markbest/go-example:v1，执行命令：kubectl create -f go-example.yaml这样子就创建好了我们的pod。 
 如果直接使用kubectl get pods是看不到我们刚才创建的pod的，应为k8s默认的namespace是default，而我们创建的pod在dailyyoga中，所有需要切换当前的namespace到dailyyoga。直接编辑命令行配置文件：vi ~/.zshr，添加以下内容：
 ```
 alias kcd="kubectl config set-context $(kubectl config current-context) --namespace"
