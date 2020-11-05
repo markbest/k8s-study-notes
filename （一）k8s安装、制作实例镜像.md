@@ -49,10 +49,10 @@ CMD ["/bin/bash", "/go/src/script/build.sh"]
 - 整个目录结构如下：  
 go-example  
 |-- app  
-|  |-- main  
-|  |-- Dockerfile  
+|--|-- main  
+|--|-- Dockerfile  
 |-- script  
-|  |-- build.sh  
+|--|-- build.sh  
 - 进入go-example目录，开始制作镜像
 ```shell
 // 制作镜像 
