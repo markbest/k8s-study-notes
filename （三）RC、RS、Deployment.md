@@ -9,7 +9,7 @@ Deployment为Pod和Replica Set提供声明式更新。
 
 # 实例操作
 上一节我们创建了一个Pod和Service已经简单实现了我们的服务，但是只是一个Pod和Service在生产环境中是不够的的，比如如果Pod因为某种情况终止或者误删除这就会导致服务不可用，为了规避这种情况我们可以使用RC、RS、Deployment来对Pod进行实时管理。  
-我们先看看怎么创建ReplicationController来优化我们的服务。先删除上一节创建的Pod，用命令：kubectl delete pod go-example-774f998fbf-9l2tq，然后创建go-example-rc.yaml，文件内容如下：
+我们先创建一个ReplicationController，执行命令`kubectl delete pod`删除上一节创建的Pod，然后创建go-example-rc.yaml，文件内容如下：
 ```
 apiVersion: apps/v1
 kind: ReplicationController
