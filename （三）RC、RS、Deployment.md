@@ -75,7 +75,30 @@ spec:
 ```
 对比创建RC的文件内容，我们可以看到变化不大，就是Kind字段进行了变更。执行`kubectl create -f go-exmaple-dy.yaml`，等待执行完成然后通过命令`kubectl get all`就可以看到创建好的Deployment和RS。
 ![](https://github.com/markbest/k8s-study-notes/blob/main/images/go-example-dy-show.png "")   
-执行`kubectl scale deployment go-exmaple --replicas=1`既可以实现Deployment的弹性伸缩，执行`kubectl set image deployment/go-exmaple image=markbest/go-example:v2`既可以实现动态更换Pod镜像进而实现滚动升级。
-
+执行`kubectl scale deployment go-exmaple --replicas=1`既可以实现Deployment的弹性伸缩，执行`kubectl set image deployment/go-exmaple go-example=markbest/go-example:v2`既可以实现动态更换Pod镜像进而实现滚动升级。
+## Deployment原理
+### 控制器模型
+在Kubernetes架构中，有一个叫做kube-controller-manager的组件。这个组件，是一系列控制器的集合。其中每一个控制器，都以独有的方式负责某种编排功能。而Deployment正是这些控制器中的一种。它们都遵循Kubernetes中一个通用的编排模式，即：控制循环
+用一段go语言伪代码，描述这个控制循环：
+```
+for {
+    实际状态 := 获取集群中对象X的实际状态
+    期望状态 := 获取集群中对象X的期望状态
+    if 实际状态 == 期望状态 {
+        什么都不做
+    }else{
+        执行编排动作，将实际状态调整为期望状态
+    }
+}
+```
+在具体实现中，实际状态往往来自于Kubernetes集群本身。比如Kubelet通过心跳汇报的容器状态和节点状态，或者监控系统中保存的应用监控数据，或者控制器主动收集的它感兴趣的信息，这些都是常见的实际状态的来源；期望状态一般来自用户提交的YAML文件，这些信息都保存在Etcd中。
+对于Deployment，它的控制器简单实现如下：  
+1、Deployment Controller从Etcd中获取到所有携带"app：go-example"标签的Pod，然后统计它们的数量，这就是实际状态。  
+2、Deployment对象的replicas的值就是期望状态。  
+3、Deployment Controller将两个状态做比较，然后根据比较结果，确定是创建Pod，还是删除已有Pod。  
+### 滚动更行
+Deployment滚动更新的实现，依赖的是Kubernetes中的ReplicaSet。Deployment控制器实际操纵的就是Replicas对象而不是Pod对象。  
+ReplicaSet负责通过"控制器模式"，保证系统中Pod的个数永远等于指定的个数。这也正是Deployment只允许容器的restartPolicy=Always的主要原因：只有容器能保证自己始终是running状态的前提下，ReplicaSet调整Pod的个数才有意义。  
+Deployment同样通过控制器模式，操作ReplicaSet的个数和属性，进而实现"水平扩展/收缩"和"滚动更新"。
 
 
