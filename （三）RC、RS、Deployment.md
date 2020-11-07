@@ -93,12 +93,12 @@ for {
 ```
 在具体实现中，实际状态往往来自于Kubernetes集群本身。比如Kubelet通过心跳汇报的容器状态和节点状态，或者监控系统中保存的应用监控数据，或者控制器主动收集的它感兴趣的信息，这些都是常见的实际状态的来源；期望状态一般来自用户提交的YAML文件，这些信息都保存在Etcd中。
 对于Deployment，它的控制器简单实现如下：  
-1、Deployment Controller从Etcd中获取到所有携带"app：go-example"标签的Pod，然后统计它们的数量，这就是实际状态。  
-2、Deployment对象的replicas的值就是期望状态。  
-3、Deployment Controller将两个状态做比较，然后根据比较结果，确定是创建Pod，还是删除已有Pod。  
+- Deployment Controller从Etcd中获取到所有携带"app：go-example"标签的Pod，然后统计它们的数量，这就是实际状态。  
+- Deployment对象的replicas的值就是期望状态。  
+- Deployment Controller将两个状态做比较，然后根据比较结果，确定是创建Pod，还是删除已有Pod。  
 ### 滚动更新
 Deployment滚动更新的实现，依赖的是Kubernetes中的ReplicaSet。Deployment控制器实际操纵的就是Replicas对象而不是Pod对象。  
-ReplicaSet负责通过"控制器模式"，保证系统中Pod的个数永远等于指定的个数。这也正是Deployment只允许容器的restartPolicy=Always的主要原因：只有容器能保证自己始终是running状态的前提下，ReplicaSet调整Pod的个数才有意义。  
-Deployment同样通过控制器模式，操作ReplicaSet的个数和属性，进而实现"水平扩展/收缩"和"滚动更新"。
+ReplicaSet负责通过"控制器模式"，保证系统中Pod的个数永远等于指定的个数。  
+Deployment同样通过控制器模式，操作ReplicaSet的个数和属性，进而实现"水平扩展/收缩"和"滚动更新"。  
 
 
