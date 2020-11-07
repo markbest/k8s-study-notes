@@ -96,7 +96,7 @@ for {
 1、Deployment Controller从Etcd中获取到所有携带"app：go-example"标签的Pod，然后统计它们的数量，这就是实际状态。  
 2、Deployment对象的replicas的值就是期望状态。  
 3、Deployment Controller将两个状态做比较，然后根据比较结果，确定是创建Pod，还是删除已有Pod。  
-### 滚动更行
+### 滚动更新
 Deployment滚动更新的实现，依赖的是Kubernetes中的ReplicaSet。Deployment控制器实际操纵的就是Replicas对象而不是Pod对象。  
 ReplicaSet负责通过"控制器模式"，保证系统中Pod的个数永远等于指定的个数。这也正是Deployment只允许容器的restartPolicy=Always的主要原因：只有容器能保证自己始终是running状态的前提下，ReplicaSet调整Pod的个数才有意义。  
 Deployment同样通过控制器模式，操作ReplicaSet的个数和属性，进而实现"水平扩展/收缩"和"滚动更新"。
