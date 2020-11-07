@@ -36,7 +36,7 @@ spec:
 - matchLabels（表示匹配的标签，根据这个Pod标签来判断是否满足replicas的数量）  
 
 然后执行`kubectl create -f go-example-rc.yaml`等待创建完成就可以看到我们创建的三个Pod，然后执行curl命令就可以看到服务确实已经均衡负载到了不同的Pod。  
-![](https://github.com/markbest/k8s-study-notes/blob/main/images/go-exmaple-rc-show.png "")  
+![](https://github.com/markbest/k8s-study-notes/blob/main/images/go-example-rc-show.png "")  
 我们测试删除一个Pod，执行`kubectl delete pod go-example-774f998fbf-cjs2j`，等待一会儿既可以看到一个Pod已经重新创建了，这个就是ReplicationController对Pod的管理，始终会保持Pod的数量满足设置的replicas，数量不足会重新创建，这样就一定程度上保证了Pod的可用性。  
 ReplicaSet是ReplicationController的升级版本，功能相似、使用方法基本一致，仅仅需要将Kind修改为ReplicaSet即可。两者的区别在于：
 - RC的selector只能用等式（比如app=go-example或者app!=go-example）来获取相关的pod。
@@ -53,6 +53,28 @@ RC或RS是不支持滚动升级的，如果需要实现滚动升级非常麻烦�
 - 手动编辑`kubectl edit rc go-example`，然后修改image参数然后保存。
 - 删除之前创建的所有Pod。因为RC只会判断Pod数量是否满足replicas，不关心image的变更，所以我们需要先删除旧的Pod，然后等待RC创建新的Pod这样就实现了滚动升级，虽然能够实现但是操作起来非常麻烦，如果Pod数量非常多，那操作起来能让人奔溃。  
 
-为了更好的实现滚动升级，我们需要进一步使用Deployment来优化我们的服务。
+为了更好的实现滚动升级，我们需要进一步使用Deployment来优化我们的服务。创建go-example-dy.yaml，内容如下：
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: go-example
+    namespace: dailyyoga
+spec:
+    replicas: 3
+    selector:
+        matchLabels:
+            app: go-example
+    template:
+        metadata:
+            labels:
+                app: go-example
+        spec:
+            containers:
+                - name: go-example
+                  image: markbest/go-example:v1
+```
+对比创建RC的文件内容，我们可以看到变化不大，就是Kind字段进行了变更。执行`kubectl create -f go-exmaple-dy.yaml`，等待执行完成然后通过命令`kubectl get all`就可以看到创建好的Deployment和RS。
+![](https://github.com/markbest/k8s-study-notes/blob/main/images/go-example-dy-show.png "")  
 
 
