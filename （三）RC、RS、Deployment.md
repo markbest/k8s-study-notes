@@ -8,6 +8,7 @@ Deployment为Pod和Replica Set提供声明式更新。
 你只需要在Deployment中描述您想要的目标状态是什么，Deployment controller就会帮您将Pod和ReplicaSet的实际状态改变到您的目标状态。您可以定义一个全新的Deployment来创建ReplicaSet或者删除已有的Deployment并创建一个新的来替换。
 
 # 实例操作
+## 使用RC优化服务
 上一节我们创建了一个Pod和Service已经简单实现了我们的服务，但是只是一个Pod和Service在生产环境中是不够的的，比如如果Pod因为某种情况终止或者误删除这就会导致服务不可用，为了规避这种情况我们可以使用RC、RS、Deployment来对Pod进行实时管理。  
 我们先创建一个ReplicationController，执行命令`kubectl delete pod`删除上一节创建的Pod，然后创建go-example-rc.yaml，文件内容如下：
 ```
@@ -42,8 +43,12 @@ ReplicaSet是ReplicationController的升级版本，功能相似、使用方法�
 - RS除了支持等式还支持通过集合的方式，比如app in (go-example,go-example-v1)，使用RS可以让运维进行更复杂的查询。  
 
 官方已经推荐我们使用RS和Deployment来代替RC。  
+
+## 弹性伸缩
 鉴于RC或者RS的功能特性，我们当然可以对Pod数量进行弹性伸缩管理，有两种方法：
 - 执行命令`kubectl scale rc rc-name --replicas=1`。
-- 手动编辑`kubectl edit rc go-example`，然后设置replicas参数保存。
+- 手动编辑`kubectl edit rc go-example`，然后设置replicas参数保存。  
+## 滚动升级
+
 
 
