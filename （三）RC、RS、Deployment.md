@@ -34,5 +34,5 @@ spec:
 - replicas: 3（表示实例数量是3，也就是总共会创建三个Pod，可以根据实际需求更改实例数量）
 - matchLabels（表示匹配的标签，根据这个Pod标签来判断是否满足replicas的数量）  
 
-然后执行kubectl create -f go-example-rc.yaml等待创建完成就可以看到我们创建的三个Pod，然后执行curl命令就可以看到服务确实已经均衡负载到了不同的Pod。  
+然后执行`kubectl create -f go-example-rc.yaml`等待创建完成就可以看到我们创建的三个Pod，然后执行curl命令就可以看到服务确实已经均衡负载到了不同的Pod。  
 ![](https://github.com/markbest/k8s-study-notes/blob/main/images/go-exmaple-rc-show.png "") 
