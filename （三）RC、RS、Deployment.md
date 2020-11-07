@@ -47,8 +47,12 @@ ReplicaSet是ReplicationController的升级版本，功能相似、使用方法�
 ## 弹性伸缩
 鉴于RC或者RS的功能特性，我们当然可以对Pod数量进行弹性伸缩管理，有两种方法：
 - 执行命令`kubectl scale rc rc-name --replicas=1`。
-- 手动编辑`kubectl edit rc go-example`，然后设置replicas参数保存。  
+- 手动编辑`kubectl edit rc go-example`，然后设置replicas参数然后保存即可。  
 ## 滚动升级
+RC或RS是不支持滚动升级的，如果需要实现滚动升级非常麻烦，往往需要以下操作：
+- 手动编辑`kubectl edit rc go-example`，然后修改image参数然后保存。
+- 删除之前创建的所有Pod。因为RC只会判断Pod数量是否满足replicas，不关心image的变更，所以我们需要先删除旧的Pod，然后等待RC创建新的Pod这样就实现了滚动升级，虽然能够实现但是操作起来非常麻烦，如果Pod数量非常多，那操作起来能让人奔溃。  
 
+为了更好的实现滚动升级，我们需要进一步使用Deployment来优化我们的服务。
 
 
