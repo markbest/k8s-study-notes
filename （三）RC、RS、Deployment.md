@@ -4,8 +4,7 @@ ReplicationController会替换由于某些原因而被删除或终止的pod，�
 ## ReplicaSet  
 ReplicaSet（RS）是Replication Controller（RC）的升级版本。ReplicaSet和Replication Controller之间的唯一区别是对选择器的支持。ReplicaSet支持labels user guide中描述的set-based选择器要求，而Replication Controller仅支持equality-based的选择器要求。
 ## Deployment
-Deployment为Pod和Replica Set提供声明式更新。
-你只需要在Deployment中描述您想要的目标状态是什么，Deployment controller就会帮您将Pod和ReplicaSet的实际状态改变到您的目标状态。您可以定义一个全新的Deployment来创建ReplicaSet或者删除已有的Deployment并创建一个新的来替换。
+Deployment为Pod和Replica Set提供声明式更新。你只需要在Deployment中描述您想要的目标状态是什么，Deployment controller就会帮您将Pod和ReplicaSet的实际状态改变到您的目标状态。您可以定义一个全新的Deployment来创建ReplicaSet或者删除已有的Deployment并创建一个新的来替换。
 
 # 实例操作
 ## 使用RC优化服务
@@ -75,6 +74,8 @@ spec:
                   image: markbest/go-example:v1
 ```
 对比创建RC的文件内容，我们可以看到变化不大，就是Kind字段进行了变更。执行`kubectl create -f go-exmaple-dy.yaml`，等待执行完成然后通过命令`kubectl get all`就可以看到创建好的Deployment和RS。
-![](https://github.com/markbest/k8s-study-notes/blob/main/images/go-example-dy-show.png "")  
+![](https://github.com/markbest/k8s-study-notes/blob/main/images/go-example-dy-show.png "")   
+执行`kubectl scale deployment go-exmaple --replicas=1`既可以实现Deployment的弹性伸缩，执行`kubectl set image deployment/go-exmaple image=markbest/go-example:v2`既可以实现动态更换Pod镜像进而实现滚动升级。
+
 
 
