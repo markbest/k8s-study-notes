@@ -4,12 +4,8 @@
 - Pod  
 Pod是Kubernetes创建或部署的最小/最简单的基本单位，一个Pod代表集群上正在运行的一个进程。
 一个Pod封装一个应用容器（也可以有多个容器），存储资源、一个独立的网络IP以及管理控制容器运行方式的策略选项。Pod代表部署的一个单位：Kubernetes中单个应用的实例，它可能由单个容器或多个容器共享组成的资源。
-- ReplicationController  
-ReplicationController会替换由于某些原因而被删除或终止的pod，例如在节点故障或中断节点维护（例如内核升级）的情况下。因此，即使应用只需要一个pod，我们也建议使用ReplicationController。
-- ReplicaSet  
-ReplicaSet（RS）是Replication Controller（RC）的升级版本。ReplicaSet 和  Replication Controller之间的唯一区别是对选择器的支持。ReplicaSet支持labels user guide中描述的set-based选择器要求， 而Replication Controller仅支持equality-based的选择器要求。
 
-## 创建实例Pod和Service
+## 创建实例
 上一笔记我们记录了k8s的安装配置和实例镜像的制作，这节主要介绍在k8s中创建一个实例服务。
 - 首先新建一个namespace，namespace.yaml内容如下：
 ```
