@@ -37,11 +37,13 @@ spec:
 然后执行`kubectl create -f go-example-rc.yaml`等待创建完成就可以看到我们创建的三个Pod，然后执行curl命令就可以看到服务确实已经均衡负载到了不同的Pod。  
 ![](https://github.com/markbest/k8s-study-notes/blob/main/images/go-exmaple-rc-show.png "")  
 我们测试删除一个Pod，执行`kubectl delete pod go-example-774f998fbf-cjs2j`，等待一会儿既可以看到一个Pod已经重新创建了，这个就是ReplicationController对Pod的管理，始终会保持Pod的数量满足设置的replicas，数量不足会重新创建，这样就一定程度上保证了Pod的可用性。  
-鉴于RC的特性，我们当然可以对Pod数量进行动态伸缩。使用命令：`kubectl scale rc go-exmaple --replicas=5`即可。   
-ReplicaSet是ReplicationController的升级版本，功能相似、使用方法基本一致。两者的区别在于：
+ReplicaSet是ReplicationController的升级版本，功能相似、使用方法基本一致，仅仅需要将Kind修改为ReplicaSet即可。两者的区别在于：
 - RC的selector只能用等式（比如app=go-example或者app!=go-example）来获取相关的pod。
 - RS除了支持等式还支持通过集合的方式，比如app in (go-example,go-example-v1)，使用RS可以让运维进行更复杂的查询。  
 
-官方已经推荐我们使用RS和Deployment来代替RC。
+官方已经推荐我们使用RS和Deployment来代替RC。  
+鉴于RC或者RS的功能特性，我们当然可以对Pod数量进行弹性伸缩管理，有两种方法：
+- 执行命令`kubectl scale rc rc-name --replicas=1`。
+- 手动编辑`kubectl edit rc go-example`，然后设置replicas参数保存。
 
 
